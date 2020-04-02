@@ -27,6 +27,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    # third-party
+    'widget_tweaks',
+
     # user-defined
     "boards.apps.BoardsConfig",
 ]
