@@ -5,7 +5,7 @@
     <li class="breadcrumb-item active">{{ board.name }}</li>
 {% endblock breadcrumb %}
 
-{% block body %}
+{% block content %}
     <div class="mb-4">
         <a href="{% url 'boards:new_topic' board.pk %}" class="btn btn-primary">New Topic</a>
     </div>
@@ -32,4 +32,4 @@
             {% endfor %}
         </tbody>
     </table>
-{% endblock body %}
+{% endblock content %}
