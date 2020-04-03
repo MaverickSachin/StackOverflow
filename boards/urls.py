@@ -12,4 +12,7 @@ urlpatterns = [
 
     # /boards/1/new/
     path('<int:pk>/new/', views.new_topic, name='new_topic'),
+
+    # /boards/1/topics/1/
+    path('<int:pk>/topics/<int:topic_pk>/', views.posts, name='posts'),
 ]
