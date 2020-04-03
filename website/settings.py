@@ -32,6 +32,8 @@ INSTALLED_APPS = [
 
     # user-defined
     "boards.apps.BoardsConfig",
+    "accounts.apps.AccountsConfig",
+    "settings.apps.SettingsConfig",
 ]
 
 MIDDLEWARE = [
@@ -117,3 +119,10 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+LOGOUT_REDIRECT_URL = 'boards:home'
+LOGIN_REDIRECT_URL = 'boards:home'
+
+LOGIN_URL = 'accounts:login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -7,4 +7,10 @@ urlpatterns = [
 
     # /boards/
     path('boards/', include('boards.urls', namespace='boards')),
+
+    # /accounts/
+    path('accounts/', include('accounts.urls', namespace='accounts')),
+
+    # /settings/
+    path('settings/', include('settings.urls', namespace='settings')),
 ]
