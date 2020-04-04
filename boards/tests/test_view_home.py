@@ -15,7 +15,7 @@ class HomeTests(TestCase):
 
     def test_home_url_resolves_home_view(self):
         view = resolve('/boards/')
-        self.assertEquals(view.func, views.home)
+        self.assertEquals(view.func.view_class, views.BoardListView)
 
     def test_home_view_contains_link_to_topics_page(self):
         url = reverse('boards:topics', kwargs={'pk': self.board.pk})
