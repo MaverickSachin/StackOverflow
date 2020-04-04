@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     # third-party
-    'widget_tweaks',
+    "widget_tweaks",
+    "django.contrib.humanize",
 
     # user-defined
     "boards.apps.BoardsConfig",

@@ -4,6 +4,14 @@
     Edit post
 {% endblock title %}
 
+{% block javascript %}
+
+    <script>
+        var simplemde = new SimpleMDE();
+    </script>
+
+{% endblock javascript %}
+
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'boards:home' %}">Boards</a></li>
     <li class="breadcrumb-item"><a href="{% url 'boards:topics' post.topic.board.pk %}">{{ post.topic.board.name }}</a></li>

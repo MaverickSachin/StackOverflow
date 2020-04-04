@@ -6,7 +6,7 @@ from django.db.models import Count
 from django.views.generic import ListView, UpdateView
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.urls import reverse
 
 
 class BoardListView(ListView):
@@ -15,26 +15,20 @@ class BoardListView(ListView):
     template_name = 'boards/home.html'
 
 
-def topics(request, pk):
-    board = get_object_or_404(Board, pk=pk)
-    queryset = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
-    page = request.GET.get('page', 1)
+class TopicsListView(ListView):
+    model = Topic
+    context_object_name = 'topics'
+    template_name = 'boards/topics.html'
+    paginate_by = 10
 
-    paginator = Paginator(queryset, 10)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        kwargs['board'] = self.board
+        return super().get_context_data(**kwargs)
 
-    try:
-        topics = paginator.page(page)
-
-    except PageNotAnInteger:
-        # fallback to the first page
-        topics = paginator.page(1)
-
-    except EmptyPage:
-        # probably user tried to add a page number
-        # in the url, so we fallback to the last page
-        topics = paginator.page(paginator.num_pages)
-
-    return render(request, 'boards/topics.html', {'board': board, 'topics': topics})
+    def get_queryset(self):
+        self.board = get_object_or_404(Board, pk=self.kwargs.get('pk'))
+        queryset = self.board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
+        return queryset
 
 
 @login_required
@@ -63,11 +57,26 @@ def new_topic(request, pk):
     return render(request, 'boards/new_topic.html', {'board': board, 'form': form})
 
 
-def posts(request, pk, topic_pk):
-    topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
-    topic.views += 1
-    topic.save()
-    return render(request, 'boards/posts.html', {'topic': topic})
+class PostListView(ListView):
+    model = Post
+    context_object_name = 'posts'
+    template_name = 'boards/posts.html'
+    paginate_by = 2
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        session_key = f'viewed_topic_{self.topic.pk}'
+        if not self.request.session.get(session_key, False):
+            self.topic.views += 1
+            self.topic.save()
+            self.request.session[session_key] = True
+
+        kwargs['topic'] = self.topic
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        self.topic = get_object_or_404(Topic, board__pk=self.kwargs.get('pk'), pk=self.kwargs.get('topic_pk'))
+        queryset = self.topic.posts.order_by('created_at')
+        return queryset
 
 
 @login_required
@@ -81,7 +90,13 @@ def reply_topic(request, pk, topic_pk):
             post.created_by = request.user
             post.save()
 
-            return redirect('boards:posts', pk=pk, topic_pk=topic_pk)
+            topic.last_updated = timezone.now()
+            topic.save()
+
+            topic_url = reverse('boards:posts', kwargs={'pk': pk, 'topic_pk': topic_pk})
+            topic_post_url = f'{topic_url}?page={topic.get_page_count()}#{post.pk}'
+
+            return redirect(topic_post_url)
 
     else:
         form = PostForm()

@@ -14,7 +14,7 @@ class ReplyTopicTestCase(TestCase):
         self.password = 'password1234'
         self.user = User.objects.create_user(username=self.username, email='kevin@gmail.com', password=self.password)
         self.topic = Topic.objects.create(subject='hello world', board=self.board, starter=self.user)
-        Post.objects.create(message='hello world!!', topic=self.topic, created_by=self.user)
+        self.post = Post.objects.create(message='hello world!!', topic=self.topic, created_by=self.user)
         self.url = reverse('boards:reply_topic', kwargs={'pk': self.board.pk, 'topic_pk': self.topic.pk})
 
 
@@ -60,7 +60,9 @@ class SuccessfulReplyTopicTests(ReplyTopicTestCase):
     def test_redirection(self):
         # a valid form should redirect the user
         posts_url = reverse('boards:posts', kwargs={'pk': self.board.pk, 'topic_pk': self.topic.pk})
-        self.assertRedirects(self.response, posts_url)
+        post_number = self.post.pk + 1
+        topic_posts_url = f'{posts_url}?page=1#{post_number}'
+        self.assertRedirects(self.response, topic_posts_url)
 
     def test_reply_created(self):
         # the total post count should be 2: the one created in the 'ReplyTopicTestCase' setUp

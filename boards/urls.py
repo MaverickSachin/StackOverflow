@@ -8,13 +8,13 @@ urlpatterns = [
     path('', views.BoardListView.as_view(), name='home'),
 
     # /boards/1/
-    path('<int:pk>/', views.topics, name='topics'),
+    path('<int:pk>/', views.TopicsListView.as_view(), name='topics'),
 
     # /boards/1/new/
     path('<int:pk>/new/', views.new_topic, name='new_topic'),
 
     # /boards/1/topics/1/
-    path('<int:pk>/topics/<int:topic_pk>/', views.posts, name='posts'),
+    path('<int:pk>/topics/<int:topic_pk>/', views.PostListView.as_view(), name='posts'),
 
     # /boards/1/topics/1/reply/
     path('<int:pk>/topics/<int:topic_pk>/reply/', views.reply_topic, name='reply_topic'),
