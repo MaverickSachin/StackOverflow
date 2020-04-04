@@ -5,7 +5,7 @@ app_name = 'boards'
 
 urlpatterns = [
     # /boards/
-    path('', views.home, name='home'),
+    path('', views.BoardListView.as_view(), name='home'),
 
     # /boards/1/
     path('<int:pk>/', views.topics, name='topics'),
@@ -18,4 +18,7 @@ urlpatterns = [
 
     # /boards/1/topics/1/reply/
     path('<int:pk>/topics/<int:topic_pk>/reply/', views.reply_topic, name='reply_topic'),
+
+    # /boards/1/topics/1/posts/1/edit/
+    path('<int:pk>/topics/<int:topic_pk>/posts/<int:post_pk>/edit/', views.PostUpdateView.as_view(), name='edit_post'),
 ]
