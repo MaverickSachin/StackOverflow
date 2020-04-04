@@ -20,7 +20,7 @@ class TopicsTests(TestCase):
 
     def test_topics_view_url_resolves(self):
         view = resolve('/boards/1/')
-        self.assertEquals(view.func, views.topics)
+        self.assertEquals(view.func.view_class, views.TopicsListView)
 
     def test_topics_view_contains_navigation_links(self):
         home_page_url = reverse('boards:home')

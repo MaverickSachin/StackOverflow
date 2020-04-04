@@ -6,6 +6,14 @@
     Post a reply
 {% endblock title %}
 
+{% block javascript %}
+
+    <script>
+        var simplemde = new SimpleMDE();
+    </script>
+
+{% endblock javascript %}
+
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'boards:home' %}">Boards</a></li>
     <li class="breadcrumb-item"><a href="{% url 'boards:topics' topic.board.pk %}">{{ topic.board.name }}</a></li>
@@ -25,7 +33,7 @@
 
     </form>
 
-    {% for post in topic.posts.all %}
+    {% for post in topic.get_last_ten_posts %}
 
         <div class="card mb-2">
 
@@ -47,7 +55,7 @@
 
                 </div>
 
-                {{ post.message }}
+                {{ post.get_message_as_markdown }}
 
             </div>
 
