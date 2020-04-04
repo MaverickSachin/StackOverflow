@@ -15,4 +15,7 @@ urlpatterns = [
 
     # /boards/1/topics/1/
     path('<int:pk>/topics/<int:topic_pk>/', views.posts, name='posts'),
+
+    # /boards/1/topics/1/reply/
+    path('<int:pk>/topics/<int:topic_pk>/reply/', views.reply_topic, name='reply_topic'),
 ]
